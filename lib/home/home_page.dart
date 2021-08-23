@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:notes/home/widget/home_app_bar.dart';
 import 'package:notes/home/widget/note_card_widget.dart';
+import 'package:notes/login/models/user_model.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,10 +13,16 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel user = ModalRoute.of(context)!.settings.arguments as UserModel;
     return Scaffold(
-      appBar: AppBar(
-        title: Text('NOTES'),
-        centerTitle: true,
+      appBar: HomeAppBarWidget(
+        user: user,
+        onTap: () async {
+          var description = await Navigator.pushNamed(context, '/create-note');
+          setState(() {
+            notes.add(description! as String);
+          });
+        },
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -25,40 +33,10 @@ class _HomePageState extends State<HomePage> {
               NoteCardWidget(
                 notes: notes,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SizedBox(
-                      width: 120,
-                      child: ElevatedButton.icon(
-                          onPressed: () async {
-                            var description = await Navigator.pushNamed(
-                                context, '/create-note');
-                            setState(() {
-                              notes.add(description! as String);
-                            });
-                          },
-                          icon: Icon(Icons.add),
-                          label: Text('Nota')),
-                    ),
-                  ],
-                ),
-              ),
             ],
           ),
         ),
       ),
-      /*floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var description = await Navigator.pushNamed(context, '/create-note');
-          setState(() {
-            notes.add(description! as String);
-          });
-        },
-        child: Icon(Icons.add),
-      ),*/
     );
   }
 }
